@@ -1,3 +1,7 @@
+mod guess_the_number;
+mod list;
+
+
 fn main() {
-    println!("Hello, world!");
+    list::list::run()
 }
