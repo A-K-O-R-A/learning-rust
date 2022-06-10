@@ -8,7 +8,6 @@ pub mod department_tui {
     by department, sorted alphabetically.
     */
 
-    #[derive(Debug)]
     struct Employee {
         name: String,
         department: String,
