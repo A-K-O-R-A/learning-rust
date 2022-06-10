@@ -1,7 +1,8 @@
 mod guess_the_number;
 mod list;
 mod pascal_triangle;
+mod pig_latin;
 
 fn main() {
-    pascal_triangle::pascal_triangle::run()
+    pig_latin::pig_latin::run()
 }
