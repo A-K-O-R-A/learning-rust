@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 dotenv = "0.15.0"
+rocket = "0.5.0-rc.2"
