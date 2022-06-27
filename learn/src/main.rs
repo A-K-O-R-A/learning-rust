@@ -5,4 +5,6 @@ mod list;
 mod pascal_triangle;
 mod pig_latin;
 
-fn main() {}
+fn main() {
+    department_tui::department_tui::run()
+}

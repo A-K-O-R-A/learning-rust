@@ -2,6 +2,7 @@
 extern crate rocket;
 extern crate dotenv;
 
+mod db;
 use dotenv::dotenv;
 use std::env;
 
@@ -12,6 +13,8 @@ fn rocket() -> _ {
     for (key, value) in env::vars() {
         // println!("{}: {}", key, value);
     }
+
+    db::qwq();
 
     rocket::build().mount("/", ![index])
 }
