@@ -27,13 +27,14 @@ mod small {
             let bot_2: i64 = (-262537412640768000_i64).pow(q as u32);
             let bottom = bot_1 * bot_2;
 
+            /*
             println!(
                 "{} / {} * {} \n = {}",
                 top,
                 bot_1,
                 bot_2,
                 top / (&bot_1 * &bot_2)
-            );
+            );*/
 
             rat += top as f64 / bottom as f64;
 
@@ -45,6 +46,7 @@ mod small {
 }
 
 mod big {
+    use bigdecimal::BigDecimal;
     use num::{traits::Pow, BigInt, BigRational, FromPrimitive, One, ToPrimitive, Zero};
 
     pub fn factorial(n: BigInt) -> BigInt {
@@ -92,11 +94,48 @@ mod big {
     */
 
     // Calculate large pi digits
+    pub fn chudnovsky_algorithm(n: BigInt) -> BigDecimal {
+        let r = BigDecimal::from(426880_u64) * BigDecimal::from(10005_u64).sqrt().unwrap();
+        println!("r = {}", r);
+
+        let b2 = BigInt::from_i64(-26253741264076800_i64).unwrap();
+
+        let mut rat = BigDecimal::one();
+        let mut q = BigInt::zero();
+
+        while &q <= &n {
+            let top: BigInt = factorial(6_u64 * &q) * ((545140134_u64 * &q) + 13591409_u64);
+
+            let bot_1: BigInt = factorial(3_u64 * &q) * factorial_ref(&q).pow(3_u32);
+            let bot_2: BigInt = (&b2).pow(q.clone().to_u32().unwrap());
+
+            /*
+            println!(
+                "{} / {} * {} \n = {}",
+                top,
+                bot_1,
+                bot_2,
+                BigRational::new(top.clone(), &bot_1 * &bot_2)
+            );*/
+
+            let bottom: BigInt = bot_1 * bot_2;
+
+            //rat += BigRational::new(top, bottom);
+            rat += BigDecimal::from(top) / BigDecimal::from(bottom);
+
+            //println!("{}", rat);
+            q += BigInt::one();
+        }
+
+        BigDecimal::one() / (rat / r)
+    }
+
+    // Calculate large pi digits
     #[allow(unused_variables)]
-    pub fn chudnovsky_algorithm(n: BigInt) -> BigRational {
-        let r1 = 426880_f64;
-        let r2 = 10005_f64.sqrt();
-        let r = BigRational::from_f64(r1 * r2).unwrap();
+    #[allow(dead_code)]
+    pub fn chudnovsky_algorithm_old(n: BigInt) -> BigRational {
+        let r = BigRational::from_f64(426880_f64 * 10005_f64.sqrt()).unwrap();
+        println!("r = {}", r);
 
         let t1 = BigInt::from_u64(6).unwrap();
         let t2 = BigInt::from_u64(545140134).unwrap();
@@ -119,7 +158,7 @@ mod big {
                 top,
                 bot_1,
                 bot_2,
-                BigRational::new(top.clone(), (&bot_1 * &bot_2))
+                BigRational::new(top.clone(), &bot_1 * &bot_2)
             );
 
             let bottom: BigInt = bot_1 * bot_2;
@@ -143,7 +182,7 @@ fn chudnovsky_algorithm(n: usize) -> BigRational {
 */
 
 fn main() {
-    let n = 1_u8;
+    let n = 0_u8;
     // This is a very large number.
     println!(
         "  big({}) = {}",
