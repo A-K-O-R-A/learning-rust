@@ -2,6 +2,9 @@
 extern crate rocket;
 extern crate dotenv;
 
+use db::Bin;
+use mongodb::bson::doc;
+use mongodb::Collection;
 use rocket_db_pools::mongodb;
 use rocket_db_pools::{Connection, Database};
 
@@ -20,7 +23,7 @@ async fn rocket() -> _ {
 
     rocket::build()
         .attach(Bins::init())
-        .mount("/", routes![index, owo])
+        .mount("/", routes![index, owo, uwu])
 }
 
 #[get("/")]
@@ -29,8 +32,15 @@ fn index() -> &'static str {
 }
 
 #[get("/owo")]
-fn owo(mut db: Connection<Bins>) -> &'static str {
-    let db = db.database("copybin");
+async fn owo(mut db: Connection<Bins>) -> &'static str {
+    let coll: Collection<Bin> = db.database("copybin").collection("bins");
+    let res = coll.distinct("id", doc! { "id":"a"}, None).await;
+    "Hello, world!"
+}
 
+#[post("/uwu")]
+async fn uwu(mut db: Connection<Bins>) -> &'static str {
+    let coll: Collection<Bin> = db.database("copybin").collection("bins");
+    let res = coll.distinct("id", doc! { "id":"a"}, None).await;
     "Hello, world!"
 }

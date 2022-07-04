@@ -1,4 +1,5 @@
 use mongodb::{Client, Database};
+use rocket::serde::{Deserialize, Serialize};
 use std::env;
 use std::error::Error;
 
@@ -27,4 +28,12 @@ pub async fn init() -> Result<(Client, Database), Box<dyn Error>> {
     }
 
     Ok((client, db))
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(crate = "rocket::serde")]
+pub struct Bin {
+    id: String,
+    content: String,
+    language: String,
 }
