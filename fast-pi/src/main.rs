@@ -60,6 +60,7 @@ mod big {
         prod
     }
 
+    /*
     pub fn factorial_rat(n: BigRational) -> BigRational {
         let mut k: BigRational = One::one();
         let mut prod: BigRational = One::one();
@@ -80,13 +81,14 @@ mod big {
 
         prod
     }
+    */
 
     // Calculate large pi digits.
     pub fn chudnovsky_algorithm(n: BigInt) -> BigRational {
         let mut rat: BigRational = One::one();
         let mut q: BigInt = Zero::zero();
         while &q <= &n {
-            let top: BigRational = factorial(6_u8.to_bigint().unwrap() * &q)
+            let top: BigInt = factorial(6_u8.to_bigint().unwrap() * &q)
                 * (545140134_u64.to_bigint().unwrap() * &q + 13591409_u64.to_bigint().unwrap());
             let bot_1: BigInt =
                 factorial(3_u8.to_bigint().unwrap() * &q) * factorial_ref(&q).pow(3_u32);
@@ -103,14 +105,16 @@ mod big {
             );
             let bottom = bot_1 * bot_2;
 
-            rat += top / bottom;
+            rat += BigRational::from(top) / BigRational::from(bottom);
 
             println!("{}", rat);
             q += BigInt::one();
         }
 
         BigRational::one()
-            / (rat / 426880_u32.to_bigint().unwrap() * (10005_u32.to_bigint().unwrap()).sqrt())
+            / (rat
+                / (BigRational::from_integer(426880_i32.to_bigint().unwrap())
+                    * (BigRational::from_float(10005_f64.sqrt()).unwrap())))
     }
 }
 
@@ -123,10 +127,12 @@ fn chudnovsky_algorithm(n: usize) -> BigRational {
 */
 
 fn main() {
+    let n = 10_u8;
     // This is a very large number.
     println!(
-        "alg(1000) = {}",
-        big::chudnovsky_algorithm(BigInt::from(1)).to_f64().unwrap()
+        "alg({}) = {}",
+        &n,
+        big::chudnovsky_algorithm(BigInt::from(n)).to_f64().unwrap()
     );
 }
 
@@ -165,12 +171,14 @@ mod tests {
     }
 
     mod big_tests {
+        use num::One;
+
         use super::*;
-        // #[test]
-        // fn chudnovsky_algorithm() {
-        //     let pi = big::chudnovsky_algorithm(1);
-        //     assert_eq!(pi, 3.141592653589793);
-        // }
+        #[test]
+        fn chudnovsky_algorithm() {
+            let pi = big::chudnovsky_algorithm(BigInt::one()).to_f64().unwrap();
+            assert_eq!(pi, 3.141592653589793);
+        }
 
         mod factorial {
             use num::{One, Zero};
