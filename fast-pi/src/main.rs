@@ -19,7 +19,7 @@ mod small {
     pub fn chudnovsky_algorithm(n: usize) -> f64 {
         let mut rat = 0_f64;
         let mut q: usize = 0;
-        while q < n + 1 {
+        while q < n {
             let top: i64 = (factorial(6 * q) * (545140134 * q + 13591409))
                 .try_into()
                 .unwrap();
@@ -40,6 +40,9 @@ mod small {
 
             q += 1;
         }
+
+        println!("1   = {}", 426880_f64 * 10005_f64.sqrt());
+        println!("rat = {}", rat);
 
         1_f64 / (rat / (426880_f64 * 10005_f64.sqrt()))
     }
@@ -96,14 +99,13 @@ mod big {
     // Calculate large pi digits
     pub fn chudnovsky_algorithm(n: BigInt) -> BigDecimal {
         let r = BigDecimal::from(426880_u64) * BigDecimal::from(10005_u64).sqrt().unwrap();
-        println!("r = {}", r);
 
         let b2 = BigInt::from_i64(-26253741264076800_i64).unwrap();
 
         let mut rat = BigDecimal::one();
         let mut q = BigInt::zero();
 
-        while &q <= &n {
+        while &q < &n {
             let top: BigInt = factorial(6_u64 * &q) * ((545140134_u64 * &q) + 13591409_u64);
 
             let bot_1: BigInt = factorial(3_u64 * &q) * factorial_ref(&q).pow(3_u32);
@@ -123,9 +125,11 @@ mod big {
             //rat += BigRational::new(top, bottom);
             rat += BigDecimal::from(top) / BigDecimal::from(bottom);
 
-            //println!("{}", rat);
             q += BigInt::one();
         }
+
+        println!("2   = {}", r);
+        println!("rat = {}", rat);
 
         BigDecimal::one() / (rat / r)
     }
@@ -182,18 +186,17 @@ fn chudnovsky_algorithm(n: usize) -> BigRational {
 */
 
 fn main() {
-    let n = 0_u8;
+    let n: usize = 1;
+    println!(
+        "small({}) = {}",
+        &n,
+        small::chudnovsky_algorithm(n).to_f64().unwrap()
+    );
     // This is a very large number.
     println!(
         "  big({}) = {}",
         &n,
-        big::chudnovsky_algorithm(BigInt::from(n)).to_f64().unwrap()
-    );
-
-    println!(
-        "small({}) = {}",
-        &n,
-        small::chudnovsky_algorithm(n as usize).to_f64().unwrap()
+        big::chudnovsky_algorithm(BigInt::from(n + 100))
     );
 }
 

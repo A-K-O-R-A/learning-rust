@@ -32,8 +32,23 @@ pub async fn init() -> Result<(Client, Database), Box<dyn Error>> {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(crate = "rocket::serde")]
+#[allow(non_camel_case_types)]
+pub enum Language {
+    java,
+    js,
+    node,
+    deno,
+    bun,
+    python,
+    c,
+    csharp,
+    cpp,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(crate = "rocket::serde")]
 pub struct Bin {
-    id: String,
-    content: String,
-    language: String,
+    pub id: String,
+    pub content: String,
+    pub language: Language,
 }
