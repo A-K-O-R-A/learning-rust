@@ -6,6 +6,7 @@ use db::Bin;
 use mongodb::bson::doc;
 use mongodb::results::InsertOneResult;
 use mongodb::Collection;
+use rocket::fs::FileServer;
 use rocket::serde::json::Json;
 use rocket_db_pools::mongodb;
 use rocket_db_pools::{Connection, Database};
@@ -25,15 +26,11 @@ async fn rocket() -> _ {
 
     rocket::build()
         .attach(Bins::init())
-        .mount("/", routes![index, find_id, uwu, create_test])
+        .mount("/", FileServer::from("./static"))
+        .mount("/", routes![find_id, create_test])
 }
 
-#[get("/")]
-fn index() -> &'static str {
-    "Hello, world!"
-}
-
-#[get("/find_id/<id>")]
+#[get("/api/find_id/<id>")]
 async fn find_id(db: Connection<Bins>, id: &str) -> Option<Json<Bin>> {
     let collection = db.database("copybin").collection::<Bin>("bins");
     let res = collection.find_one(doc! { "id": id}, None).await;
@@ -50,7 +47,7 @@ async fn find_id(db: Connection<Bins>, id: &str) -> Option<Json<Bin>> {
     }
 }
 
-#[put("/create", data = "<bin_data>")]
+#[put("/api/create", data = "<bin_data>")]
 async fn create_test(db: Connection<Bins>, bin_data: Json<Bin>) -> Option<Json<InsertOneResult>> {
     let collection: Collection<Bin> = db.database("copybin").collection("bins");
 
@@ -64,11 +61,4 @@ async fn create_test(db: Connection<Bins>, bin_data: Json<Bin>) -> Option<Json<I
             None
         }
     }
-}
-
-#[post("/uwu")]
-async fn uwu(_db: Connection<Bins>) -> &'static str {
-    //let coll: Collection<Bin> = db.database("copybin").collection("bins");
-    //let res = coll.distinct("id", doc! { "id":"a"}, None).await;
-    "Hello, world!"
 }
