@@ -47,12 +47,21 @@ async fn find_id(db: Connection<Bins>, id: &str) -> Option<Json<Bin>> {
     }
 }
 
-#[put("/api/create", data = "<bin_data>")]
-async fn create_test(db: Connection<Bins>, bin_data: Json<Bin>) -> Option<Json<InsertOneResult>> {
+#[post("/api/create", data = "<bin_data>")]
+async fn create_test(
+    db: Connection<Bins>,
+    bin_data: Json<db::UploadedBin>,
+) -> Option<Json<InsertOneResult>> {
     let collection: Collection<Bin> = db.database("copybin").collection("bins");
 
     // Insert some documents into the "mydb.books" collection.
-    let res = collection.insert_one(bin_data.0, None).await;
+    let random_id = "Abs".to_string();
+    let bin = Bin {
+        id: random_id,
+        code: bin_data.0.code,
+        language: bin_data.0.language,
+    };
+    let res = collection.insert_one(bin, None).await;
 
     match res {
         Ok(r) => Some(Json(r)), //result.inserted_id.as_str().unwrap().clone()
