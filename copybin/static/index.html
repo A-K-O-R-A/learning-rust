@@ -29,46 +29,285 @@
         }
 
         body {
-            margin: 1em auto;
-            max-width: 40em;
-            padding: 0 .62em;
-            font: 1.2em/1.62 sans-serif
+            margin: 0;
+            font: 2vmin sans-serif;
         }
 
-        h1,
-        h2,
-        h3 {
-            line-height: 1.2
+        header {
+            height: 10vmin;
+            padding-left: 2vmin;
         }
 
-        @media print {
-            body {
-                max-width: none
-            }
+        h1 {
+            float: left;
+            display: inline;
+            width: 49%;
         }
 
         #editor {
             position: absolute;
-            top: 2em;
-            right: 0;
+            top: 10vmin;
             bottom: 0;
             left: 0;
+            right: 0;
         }
     </style>
+
+    <script>
+        /** @param x {string} 
+         * @returns {HTMLElement}
+        */
+        let $ = x => document.querySelector(x);
+
+
+        /**
+         * @param code {string}
+         * @param language {string}
+         */
+        async function uploadCode(code, language) {
+            console.log('uploaded code', { code, language })
+        }
+    </script>
 </head>
 
+
 <body>
-    <h1>Deine Mom </h1>
-    <div id=editor>function foo(items) {
+    <header>
+        <h1>Deine Mom </h1>
+        <select id="mode">
+
+        </select>
+        <script>
+            const languages = [
+                "abap",
+                "abc",
+                "actionscript",
+                "ada",
+                "alda",
+                "apache_conf",
+                "apex",
+                "applescript",
+                "aql",
+                "asciidoc",
+                "asl",
+                "assembly_x86",
+                "autohotkey",
+                "batchfile",
+                "c9search",
+                "cirru",
+                "clojure",
+                "cobol",
+                "coffee",
+                "coldfusion",
+                "crystal",
+                "csharp",
+                "csound_document",
+                "csound_orchestra",
+                "csound_score",
+                "csp",
+                "css",
+                "curly",
+                "c_cpp",
+                "d",
+                "dart",
+                "diff",
+                "django",
+                "dockerfile",
+                "dot",
+                "drools",
+                "edifact",
+                "eiffel",
+                "ejs",
+                "elixir",
+                "elm",
+                "erlang",
+                "forth",
+                "fortran",
+                "fsharp",
+                "fsl",
+                "ftl",
+                "gcode",
+                "gherkin",
+                "gitignore",
+                "glsl",
+                "gobstones",
+                "golang",
+                "graphqlschema",
+                "groovy",
+                "haml",
+                "handlebars",
+                "haskell",
+                "haskell_cabal",
+                "haxe",
+                "hjson",
+                "html",
+                "html_elixir",
+                "html_ruby",
+                "ini",
+                "io",
+                "ion",
+                "jack",
+                "jade",
+                "java",
+                "javascript",
+                "json",
+                "json5",
+                "jsoniq",
+                "jsp",
+                "jssm",
+                "jsx",
+                "julia",
+                "kotlin",
+                "latex",
+                "latte",
+                "less",
+                "liquid",
+                "lisp",
+                "livescript",
+                "logiql",
+                "logtalk",
+                "lsl",
+                "lua",
+                "luapage",
+                "lucene",
+                "makefile",
+                "markdown",
+                "mask",
+                "matlab",
+                "maze",
+                "mediawiki",
+                "mel",
+                "mips",
+                "mixal",
+                "mushcode",
+                "mysql",
+                "nginx",
+                "nim",
+                "nix",
+                "nsis",
+                "nunjucks",
+                "objectivec",
+                "ocaml",
+                "partiql",
+                "pascal",
+                "perl",
+                "pgsql",
+                "php",
+                "php_laravel_blade",
+                "pig",
+                "plain_text",
+                "powershell",
+                "praat",
+                "prisma",
+                "prolog",
+                "properties",
+                "protobuf",
+                "puppet",
+                "python",
+                "qml",
+                "r",
+                "raku",
+                "razor",
+                "rdoc",
+                "red",
+                "redshift",
+                "rhtml",
+                "robot",
+                "rst",
+                "ruby",
+                "rust",
+                "sac",
+                "sass",
+                "scad",
+                "scala",
+                "scheme",
+                "scrypt",
+                "scss",
+                "sh",
+                "sjs",
+                "slim",
+                "smarty",
+                "smithy",
+                "snippets",
+                "soy_template",
+                "space",
+                "sparql",
+                "sql",
+                "sqlserver",
+                "stylus",
+                "svg",
+                "swift",
+                "tcl",
+                "terraform",
+                "tex",
+                "text",
+                "textile",
+                "toml",
+                "tsx",
+                "turtle",
+                "twig",
+                "typescript",
+                "vala",
+                "vbscript",
+                "velocity",
+                "verilog",
+                "vhdl",
+                "visualforce",
+                "wollok",
+                "xml",
+                "xquery",
+                "yaml",
+                "zeek"
+            ]
+
+            let selectionElement = $('#mode');
+            for (let lang of languages) {
+                let elm = document.createElement("option");
+                elm.setAttribute('value', lang)
+                elm.textContent = lang
+
+                if (lang === 'javascript') elm.setAttribute('selected', true);
+
+                selectionElement.appendChild(elm);
+            }
+
+            selectionElement.sele
+        </script>
+    </header>
+
+    <main id=editor>function foo(items) {
         var x = "All this is syntax highlighted";
         return x;
-        }</div>
+        }</main>
 
     <script src="/ace/ace.js"></script>
     <script>
         var editor = ace.edit("editor");
         editor.setTheme("ace/theme/nord_dark");
         editor.session.setMode("ace/mode/javascript");
+
+        editor.commands.addCommand({
+            name: 'save',
+            bindKey: { win: 'Ctrl-S', mac: 'Command-S' },
+            exec: function (editor) {
+                let code = editor.getValue();
+                let mode = editor.getSession().getMode().$id;
+                uploadCode(code, mode.slice(9))
+            },
+            readOnly: false, // false if this command should not apply in readOnly mode
+            // multiSelectAction: "forEach", optional way to control behavior with multiple cursors
+            // scrollIntoView: "cursor", control how cursor is scolled into view after the command
+        });
+
+        $('#mode').onchange = function (e) {
+            var newMode = $("#mode").value;
+            editor.getSession().setMode({
+                path: "ace/mode/" + newMode,
+                v: Date.now()
+            });
+        }
+
+        editor.resize();
     </script>
 </body>
 
